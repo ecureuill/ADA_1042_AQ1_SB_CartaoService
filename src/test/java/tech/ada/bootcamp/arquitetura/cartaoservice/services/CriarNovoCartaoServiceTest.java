@@ -1,6 +1,8 @@
 package tech.ada.bootcamp.arquitetura.cartaoservice.services;
 
 
+import java.time.LocalDate;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -13,11 +15,10 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import com.github.javafaker.Faker;
 
 import tech.ada.bootcamp.arquitetura.cartaoservice.entities.Cartao;
+import tech.ada.bootcamp.arquitetura.cartaoservice.entities.Usuario;
 import tech.ada.bootcamp.arquitetura.cartaoservice.payloads.TipoCartao;
 import tech.ada.bootcamp.arquitetura.cartaoservice.payloads.request.CadastroUsuarioRequest;
 import tech.ada.bootcamp.arquitetura.cartaoservice.repositories.CartaoRepository;
-
-import java.time.LocalDate;
 
 @ExtendWith(MockitoExtension.class)
 public class CriarNovoCartaoServiceTest {
@@ -37,10 +38,12 @@ public class CriarNovoCartaoServiceTest {
         String randomNome = Faker.instance().name().fullName();
 
         Mockito.when(cadastroUsuarioRequest.getTipoCartao()).thenReturn(randomTipoCartao);
-        Mockito.when(cadastroUsuarioRequest.getIdentificador()).thenReturn(randomIdentificador);
-        Mockito.when(cadastroUsuarioRequest.getNome()).thenReturn(randomNome);
+        
+        var usuario = new Usuario();
+        usuario.setIdentificador(randomIdentificador);
+        usuario.setNome(randomNome);
 
-        criarNovoCartaoService.execute(cadastroUsuarioRequest);
+        criarNovoCartaoService.execute(cadastroUsuarioRequest.getTipoCartao(), usuario);
 
         ArgumentCaptor<Cartao> cartaoArgumentCaptor = ArgumentCaptor.forClass(Cartao.class);
         Mockito.verify(cartaoRepository,Mockito.times(1))

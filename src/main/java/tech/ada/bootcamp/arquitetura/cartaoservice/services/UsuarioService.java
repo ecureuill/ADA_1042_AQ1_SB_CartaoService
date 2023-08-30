@@ -15,7 +15,7 @@ import tech.ada.bootcamp.arquitetura.cartaoservice.repositories.UsuarioRepositor
 public class UsuarioService {
 
     private final UsuarioRepository usuarioRepository;
-    // private final CriarNovoCartaoService cartaoService;
+    private final CriarNovoCartaoService cartaoService;
 
     public CadastroUsuarioResponse cadastrar(CadastroUsuarioRequest cadastroUsuarioRequest) {
         var enderecoRequest = cadastroUsuarioRequest.getEnderecoRequest();
@@ -36,7 +36,7 @@ public class UsuarioService {
 
         usuarioRepository.save(usuario);
         
-        Cartao cartao = new Cartao(); //TO-DO cartaoService.execute(cadastroUsuarioRequest.getTipoCartao(), usuario);
+        Cartao cartao = cartaoService.execute(cadastroUsuarioRequest.getTipoCartao(), usuario);
         
         return new CadastroUsuarioResponse(cartao.getNumeroCartao(),cartao.getNomeTitular(), cartao.getTipoCartao(), usuario.getNome());
 

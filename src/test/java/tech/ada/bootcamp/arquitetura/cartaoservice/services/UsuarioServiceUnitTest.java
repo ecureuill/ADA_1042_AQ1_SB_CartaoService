@@ -39,7 +39,7 @@ public class UsuarioServiceUnitTest {
         Mockito.when(cadastroUsuarioRequest.getNome()).thenReturn(usuario.getNome());
         Mockito.when(cadastroUsuarioRequest.getEnderecoRequest()).thenReturn(enderecoRequest);
 
-        Mockito.when(cartaoService.execute(Mockito.any())).thenReturn(new Cartao());
+        Mockito.when(cartaoService.execute(Mockito.any(), Mockito.any())).thenReturn(new Cartao());
 
         usuarioService.cadastrar(cadastroUsuarioRequest);
 
