@@ -22,8 +22,12 @@ spring:
     show-sql: true
     format-sql: true
     hibernate:
-      ddl-auto: update
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
+      format-sql: true
+      ddl-auto: none
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      naming-strategy: org.springframework.boot.orm.jpa.hibernate.PhysicalNamingStrategyStandardImpl
     properties:
       hibernate:
         jdbc:

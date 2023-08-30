@@ -24,15 +24,16 @@ public class Compra {
     @Column(name = "id", nullable = false)
     private Long id;
 
+    @Column(name = "\"dataCompra\"")
     private LocalDateTime dataCompra;
 
     public BigDecimal valor;
 
 
     @ManyToOne
-    @JoinColumn(name = "numeroCartao")
+    @JoinColumn(name = "\"numeroCartao\"")
     public Cartao cartao;
-
+    @Column(name = "\"statusCompra\"")
     public StatusCompra statusCompra;
 
 }
