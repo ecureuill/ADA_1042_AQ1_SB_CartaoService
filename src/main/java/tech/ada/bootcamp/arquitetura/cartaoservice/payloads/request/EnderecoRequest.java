@@ -1,4 +1,18 @@
 package tech.ada.bootcamp.arquitetura.cartaoservice.payloads.request;
 
-public class EnderecoRequest {
+import lombok.Getter;
+import lombok.Setter;
+
+@Getter
+@Setter
+public class EnderecoRequest {    
+    private String cep;
+    private String rua;
+    private String bairro;
+    private String cidade;
+    private String estado;
+    private String complemento;
+    private String numero;
+
+
 }
