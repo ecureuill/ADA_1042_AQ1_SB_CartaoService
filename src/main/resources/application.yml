@@ -5,25 +5,29 @@ server:
   compression:
     mime-types:
       - application/json
+  error:
+    include-stacktrace: never
 
 spring:
   main:
     allow-bean-definition-overriding: true
   datasource:
-    url: jdbc:postgresql://localhost:5433/cartao
-    username: cartao
-    password: cartao
-    continue-on-error: true
-
+    url: jdbc:postgresql://172.18.0.12:5432/cartao
+    username: devuser
+    password: 123
   application:
     name: cartoes-ms
   jpa:
-    open-in-view: false
+    open-in-view: false 
     show-sql: true
-    format-sql: true
     hibernate:
-      ddl-auto: update
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
+      format-sql: true
+      ddl-auto: none
+      dialect: org.hibernate.dialect.PostgreSQLDialect
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      naming-strategy: org.springframework.boot.orm.jpa.hibernate.PhysicalNamingStrategyStandardImpl
+
     properties:
       hibernate:
         jdbc:
@@ -31,3 +35,7 @@ spring:
   liquibase:
     enabled: true
     change-log: classpath:db/changelog/changelog-local.xml
+  sql:
+    init:
+      continue-on-error: true
+

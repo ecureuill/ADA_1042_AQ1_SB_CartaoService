@@ -1,19 +1,11 @@
 package tech.ada.bootcamp.arquitetura.cartaoservice.entities;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.Embeddable;
 import lombok.Data;
 
 @Data
-@Entity
-@Table(name = "endereco")
+@Embeddable
 public class Endereco {
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
     private String cep;
     private String rua;
     private String bairro;

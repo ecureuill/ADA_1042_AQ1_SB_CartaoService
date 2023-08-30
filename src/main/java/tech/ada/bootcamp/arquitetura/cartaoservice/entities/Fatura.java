@@ -24,16 +24,17 @@ public class Fatura {
     @Column(name = "id", nullable = false)
     private Long id;
 
+    @Column(name = "\"dataVencimento\"")
     private LocalDate dataVencimento;
-
+    @Column(name = "\"dataProcessamento\"")
     private LocalDate dataProcessamento;
 
     private BigDecimal valor;
-
+    @Column(name = "\"valorPago\"")
     private BigDecimal valorPago;
 
     @ManyToOne
-    @JoinColumn(name = "numeroCartao")
+    @JoinColumn(name = "\"numeroCartao\"")
     private Cartao cartao;
 
 }
