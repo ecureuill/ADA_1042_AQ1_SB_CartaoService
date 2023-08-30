@@ -4,8 +4,6 @@ import com.github.javafaker.Faker;
 
 import tech.ada.bootcamp.arquitetura.cartaoservice.entities.Endereco;
 import tech.ada.bootcamp.arquitetura.cartaoservice.entities.Usuario;
-import tech.ada.bootcamp.arquitetura.cartaoservice.payloads.TipoCartao;
-import tech.ada.bootcamp.arquitetura.cartaoservice.payloads.request.CadastroUsuarioRequest;
 
 public class FakeData {
 
@@ -13,7 +11,7 @@ public class FakeData {
         var usuario = new Usuario();
         usuario.setIdentificador(Faker.instance().regexify("[0-9]{11}"));
         usuario.setNome(Faker.instance().name().fullName());
-
+        usuario.setEndereco(gerarEndereco());
         return usuario;
     }
 

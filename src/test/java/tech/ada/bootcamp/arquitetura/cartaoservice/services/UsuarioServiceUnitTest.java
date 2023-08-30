@@ -11,9 +11,7 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import tech.ada.bootcamp.arquitetura.cartaoservice.entities.Cartao;
-import tech.ada.bootcamp.arquitetura.cartaoservice.entities.Endereco;
 import tech.ada.bootcamp.arquitetura.cartaoservice.entities.Usuario;
-import tech.ada.bootcamp.arquitetura.cartaoservice.payloads.TipoCartao;
 import tech.ada.bootcamp.arquitetura.cartaoservice.payloads.request.CadastroUsuarioRequest;
 import tech.ada.bootcamp.arquitetura.cartaoservice.payloads.request.EnderecoRequest;
 import tech.ada.bootcamp.arquitetura.cartaoservice.repositories.UsuarioRepository;
@@ -26,8 +24,6 @@ public class UsuarioServiceUnitTest {
     private UsuarioRepository usuarioRepository;
     @Mock
     private CriarNovoCartaoService cartaoService;
-    @Mock
-    private EnderecoService enderecoService;
 
     @InjectMocks
     private UsuarioService usuarioService;
@@ -36,15 +32,14 @@ public class UsuarioServiceUnitTest {
     @Test
     public void createUserSucessufully() {
         CadastroUsuarioRequest cadastroUsuarioRequest = Mockito.mock(CadastroUsuarioRequest.class);
-
-        EnderecoRequest enderecoRequest = Mockito.mock(EnderecoRequest.class);
-
         Usuario usuario = FakeData.gerarUsuario();
         
+        var enderecoRequest = new EnderecoRequest(usuario.getEndereco());
+
         Mockito.when(cadastroUsuarioRequest.getNome()).thenReturn(usuario.getNome());
         Mockito.when(cadastroUsuarioRequest.getEnderecoRequest()).thenReturn(enderecoRequest);
-        Mockito.when(cartaoService.execute(cadastroUsuarioRequest)).thenReturn(new Cartao());
-        Mockito.doNothing().when(enderecoService).cadastrar(Mockito.any());
+
+        Mockito.when(cartaoService.execute(Mockito.any())).thenReturn(new Cartao());
 
         usuarioService.cadastrar(cadastroUsuarioRequest);
 
@@ -52,7 +47,8 @@ public class UsuarioServiceUnitTest {
 
         Mockito.verify(usuarioRepository, Mockito.times(1)).save(usuarioArgumentCaptor.capture());
 
-        Assertions.assertEquals(usuario.getNome(), usuarioArgumentCaptor.getValue().getNome());
+        //TODO nao esta retornando o id
+        Assertions.assertEquals(usuario, usuarioArgumentCaptor.getValue());
 
     }
 }
