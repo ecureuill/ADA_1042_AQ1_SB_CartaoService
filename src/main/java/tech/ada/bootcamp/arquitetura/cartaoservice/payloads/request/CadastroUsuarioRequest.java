@@ -16,6 +16,6 @@ public class CadastroUsuarioRequest {
 
     private TipoCartao tipoCartao;
 
-    private List<String> dependentes;
+    private List<DependenteRequest> dependentes;
 
 }

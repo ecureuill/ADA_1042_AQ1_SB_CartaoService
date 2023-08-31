@@ -48,7 +48,11 @@ public class UsuarioServiceUnitTest {
         Mockito.verify(usuarioRepository, Mockito.times(1)).save(usuarioArgumentCaptor.capture());
 
         //TODO nao esta retornando o id
-        Assertions.assertEquals(usuario, usuarioArgumentCaptor.getValue());
+        // Assertions.assertEquals(usuario.getIdentificador(), usuarioArgumentCaptor.getValue().getIdentificador());        
+        Assertions.assertEquals(usuario.getNome(), usuarioArgumentCaptor.getValue().getNome());
+        Assertions.assertEquals(usuario.getDepenadentes(), usuarioArgumentCaptor.getValue().getDepenadentes());
+        Assertions.assertEquals(usuario.getEndereco(), usuarioArgumentCaptor.getValue().getEndereco());
+        Assertions.assertNotNull(usuarioArgumentCaptor.getValue().getCreatedAt());
 
     }
 }

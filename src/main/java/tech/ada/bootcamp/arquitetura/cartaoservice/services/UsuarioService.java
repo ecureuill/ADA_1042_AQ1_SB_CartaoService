@@ -1,11 +1,13 @@
 package tech.ada.bootcamp.arquitetura.cartaoservice.services;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import tech.ada.bootcamp.arquitetura.cartaoservice.entities.Cartao;
+import tech.ada.bootcamp.arquitetura.cartaoservice.entities.Dependente;
 import tech.ada.bootcamp.arquitetura.cartaoservice.entities.Endereco;
 import tech.ada.bootcamp.arquitetura.cartaoservice.entities.Usuario;
 import tech.ada.bootcamp.arquitetura.cartaoservice.payloads.request.CadastroUsuarioRequest;
@@ -34,7 +36,8 @@ public class UsuarioService {
             cadastroUsuarioRequest.getIdentificador(),
             cadastroUsuarioRequest.getNome(), 
             endereco,
-            LocalDateTime.now()
+            LocalDateTime.now(),
+            new ArrayList<Dependente>()
         );
 
         usuarioRepository.save(usuario);
