@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.transaction.Transactional;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import tech.ada.bootcamp.arquitetura.cartaoservice.payloads.request.CadastroUsuarioRequest;
@@ -22,7 +23,7 @@ public class UsuarioController {
     
     @Transactional
     @PostMapping(path = "", produces = "application/json" )
-    public CadastroUsuarioResponse cadastrarUsuario(@RequestBody CadastroUsuarioRequest cadastroUsuarioRequest){
+    public CadastroUsuarioResponse cadastrarUsuario(@RequestBody @Valid CadastroUsuarioRequest cadastroUsuarioRequest){
         return usuarioService.cadastrar(cadastroUsuarioRequest);
     }
 
