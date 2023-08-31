@@ -1,5 +1,7 @@
 package tech.ada.bootcamp.arquitetura.cartaoservice.services;
 
+import java.time.LocalDateTime;
+
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
@@ -31,7 +33,8 @@ public class UsuarioService {
         Usuario usuario = new Usuario(
             cadastroUsuarioRequest.getIdentificador(),
             cadastroUsuarioRequest.getNome(), 
-            endereco
+            endereco,
+            LocalDateTime.now()
         );
 
         usuarioRepository.save(usuario);

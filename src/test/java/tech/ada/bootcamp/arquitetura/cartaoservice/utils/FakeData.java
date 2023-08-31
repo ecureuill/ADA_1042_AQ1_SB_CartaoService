@@ -1,5 +1,7 @@
 package tech.ada.bootcamp.arquitetura.cartaoservice.utils;
 
+import java.time.LocalDateTime;
+
 import com.github.javafaker.Faker;
 
 import tech.ada.bootcamp.arquitetura.cartaoservice.entities.Endereco;
@@ -12,6 +14,7 @@ public class FakeData {
         usuario.setIdentificador(Faker.instance().regexify("[0-9]{11}"));
         usuario.setNome(Faker.instance().name().fullName());
         usuario.setEndereco(gerarEndereco());
+        usuario.setCreatedAt(LocalDateTime.now());
         return usuario;
     }
 
