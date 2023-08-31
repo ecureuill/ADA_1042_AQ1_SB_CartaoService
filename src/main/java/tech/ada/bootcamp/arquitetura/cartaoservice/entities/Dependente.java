@@ -32,6 +32,10 @@ public class Dependente {
     private String cpf;
     private String nome;
 
+    @ManyToOne
+    @JoinColumn(name = "\"usuarioIdentificador\"")
+    private Usuario usuario;
+
     @OneToOne()
     @JoinColumn(name = "\"numeroCartao\"")
     private Cartao cartao;

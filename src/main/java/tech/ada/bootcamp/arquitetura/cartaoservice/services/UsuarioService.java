@@ -2,7 +2,8 @@ package tech.ada.bootcamp.arquitetura.cartaoservice.services;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.stream.Collector;
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.stereotype.Service;
 
@@ -23,18 +24,8 @@ public class UsuarioService {
     private final CriarNovoCartaoService cartaoService;
 
     public CadastroUsuarioResponse cadastrar(CadastroUsuarioRequest cadastroUsuarioRequest) {
-        var enderecoRequest = cadastroUsuarioRequest.getEnderecoRequest();
-        Endereco endereco = new Endereco();
-        endereco.setRua(enderecoRequest.getRua());
-        endereco.setNumero(enderecoRequest.getNumero());
-        endereco.setComplemento(enderecoRequest.getComplemento());
-        endereco.setCidade(enderecoRequest.getCidade());
-        endereco.setEstado(enderecoRequest.getEstado());
-        endereco.setCep(enderecoRequest.getCep());
-        endereco.setBairro(enderecoRequest.getBairro());
-
-        var dependenteRequest = cadastroUsuarioRequest.getDependentes();
-
+        Endereco endereco = new Endereco(cadastroUsuarioRequest.getEnderecoRequest());
+        
         Usuario usuario = new Usuario(
             cadastroUsuarioRequest.getIdentificador(),
             cadastroUsuarioRequest.getNome(), 
@@ -47,12 +38,14 @@ public class UsuarioService {
         
         Cartao cartao = cartaoService.execute(cadastroUsuarioRequest.getTipoCartao(), usuarioSalvo);
 
-        dependenteRequest.forEach(dependente -> 
-        {
-            Cartao cartaoAdicional = cartaoService.cadastrarAdicional(dependente.nome(), cadastroUsuarioRequest.getTipoCartao(), usuarioSalvo);
-            usuarioSalvo.getDependentes().add(new Dependente(null, dependente.cpf(), dependente.nome(), cartaoAdicional, LocalDateTime.now()));            
-        });
-
+        
+        List<Dependente> dependentes = cadastroUsuarioRequest.getDependentes().stream().map(dependente -> 
+            {
+                Cartao cartaoAdicional = cartaoService.cadastrarAdicional(dependente.nome(), cadastroUsuarioRequest.getTipoCartao(), usuarioSalvo);
+                return new Dependente(null, dependente.cpf(), dependente.nome(), usuario, cartaoAdicional, LocalDateTime.now());            
+            }
+        ).collect(Collectors.toList());
+        usuarioSalvo.setDependentes(dependentes);
         usuarioRepository.save(usuarioSalvo);
         
         return new CadastroUsuarioResponse(cartao.getNumeroCartao(),cartao.getNomeTitular(), cartao.getTipoCartao(), usuario.getNome());
