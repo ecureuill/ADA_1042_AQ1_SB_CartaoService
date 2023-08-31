@@ -1,6 +1,7 @@
 package tech.ada.bootcamp.arquitetura.cartaoservice.services;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Objects;
 import java.util.Random;
 import java.util.UUID;
@@ -31,6 +32,7 @@ public class CriarNovoCartaoService {
         cartao.setVencimentoCartao(dataAtual.plusYears(5));
         cartao.setCodigoSeguranca(gerarNumeroAleatorio(3));
         cartao.setNumeroCartao(gerarNumeroAleatorio(12));
+        cartao.setCreatedAt(LocalDateTime.now());
 
         return cartaoRepository.save(cartao);
     }

@@ -1,6 +1,9 @@
 package tech.ada.bootcamp.arquitetura.cartaoservice.entities;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+
+import org.springframework.data.annotation.CreatedDate;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -34,5 +37,9 @@ public class Cartao {
     @ManyToOne
     @JoinColumn(name = "\"usuarioIdentificador\"")
     private Usuario usuario;
+
+    @CreatedDate
+    @Column(name = "\"createdAt\"")
+    private LocalDateTime createdAt;
 
 }
