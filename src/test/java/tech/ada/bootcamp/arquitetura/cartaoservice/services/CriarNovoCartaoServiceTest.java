@@ -57,6 +57,7 @@ public class CriarNovoCartaoServiceTest {
         Assertions.assertEquals(randomIdentificador, cartaoSalvo.getUsuario().getIdentificador());
         Assertions.assertEquals(randomNome, cartaoSalvo.getNomeTitular());
         Assertions.assertEquals(randomNome, cartaoSalvo.getUsuario().getNome());
+        Assertions.assertNotNull(cartaoSalvo.getCreatedAt());
 
     }
 }

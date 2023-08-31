@@ -3,8 +3,10 @@ package tech.ada.bootcamp.arquitetura.cartaoservice.entities;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import org.hibernate.annotations.Cascade;
 import org.springframework.data.annotation.CreatedDate;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
@@ -33,8 +35,8 @@ public class Usuario {
     @Column(name = "\"createdAt\"")
     private LocalDateTime createdAt;
 
-    @OneToMany
-    @JoinColumn(name = "dependente_id")
-    private List<Dependente> depenadentes;
+    @OneToMany(cascade = CascadeType.ALL  )
+    // @JoinColumn(name = "\"usuarioId\"")
+    private List<Dependente> dependentes;
 
 }

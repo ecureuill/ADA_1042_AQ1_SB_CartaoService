@@ -17,7 +17,7 @@ public class FakeData {
         usuario.setNome(Faker.instance().name().fullName());
         usuario.setEndereco(gerarEndereco());
         usuario.setCreatedAt(LocalDateTime.now());
-        usuario.setDepenadentes(new ArrayList<Dependente>());
+        usuario.setDependentes(new ArrayList<Dependente>());
         return usuario;
     }
 
@@ -33,5 +33,12 @@ public class FakeData {
         endereco.setCep(Faker.instance().address().zipCode());
 
         return endereco;
+    }
+
+    public static Dependente gerarDependente(){
+        var dependente = new Dependente();
+        dependente.setNome(Faker.instance().name().fullName());
+        dependente.setCpf(Faker.instance().regexify("[0-9]{11}"));
+        return dependente;
     }
 }

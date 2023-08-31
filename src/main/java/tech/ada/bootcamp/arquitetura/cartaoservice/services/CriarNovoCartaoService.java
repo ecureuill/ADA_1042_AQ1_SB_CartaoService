@@ -52,4 +52,19 @@ public class CriarNovoCartaoService {
         }
         return random;
     }
+
+    public Cartao cadastrarAdicional(String nome, TipoCartao tipoCartao, Usuario usuario) {
+        Cartao cartao = new Cartao();
+        cartao.setDependente(true);
+        cartao.setTipoCartao(tipoCartao);
+        cartao.setUsuario(usuario);
+        cartao.setIdContaBanco(UUID.randomUUID().toString());
+        cartao.setNomeTitular(nome);
+        cartao.setVencimentoCartao(LocalDate.now().plusYears(5));
+        cartao.setCodigoSeguranca(gerarNumeroAleatorio(3));
+        cartao.setNumeroCartao(gerarNumeroAleatorio(12));
+        cartao.setCreatedAt(LocalDateTime.now());
+
+        return cartaoRepository.save(cartao);
+    }
 }

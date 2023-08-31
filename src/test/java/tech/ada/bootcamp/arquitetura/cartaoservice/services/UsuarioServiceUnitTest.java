@@ -50,7 +50,7 @@ public class UsuarioServiceUnitTest {
         //TODO nao esta retornando o id
         // Assertions.assertEquals(usuario.getIdentificador(), usuarioArgumentCaptor.getValue().getIdentificador());        
         Assertions.assertEquals(usuario.getNome(), usuarioArgumentCaptor.getValue().getNome());
-        Assertions.assertEquals(usuario.getDepenadentes(), usuarioArgumentCaptor.getValue().getDepenadentes());
+        Assertions.assertEquals(usuario.getDependentes(), usuarioArgumentCaptor.getValue().getDependentes());
         Assertions.assertEquals(usuario.getEndereco(), usuarioArgumentCaptor.getValue().getEndereco());
         Assertions.assertNotNull(usuarioArgumentCaptor.getValue().getCreatedAt());
 

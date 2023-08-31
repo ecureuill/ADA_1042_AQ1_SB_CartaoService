@@ -2,6 +2,7 @@ package tech.ada.bootcamp.arquitetura.cartaoservice.services;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.stream.Collector;
 
 import org.springframework.stereotype.Service;
 
@@ -32,6 +33,8 @@ public class UsuarioService {
         endereco.setCep(enderecoRequest.getCep());
         endereco.setBairro(enderecoRequest.getBairro());
 
+        var dependenteRequest = cadastroUsuarioRequest.getDependentes();
+
         Usuario usuario = new Usuario(
             cadastroUsuarioRequest.getIdentificador(),
             cadastroUsuarioRequest.getNome(), 
@@ -40,9 +43,17 @@ public class UsuarioService {
             new ArrayList<Dependente>()
         );
 
-        usuarioRepository.save(usuario);
+        var usuarioSalvo = usuarioRepository.save(usuario);
         
-        Cartao cartao = cartaoService.execute(cadastroUsuarioRequest.getTipoCartao(), usuario);
+        Cartao cartao = cartaoService.execute(cadastroUsuarioRequest.getTipoCartao(), usuarioSalvo);
+
+        dependenteRequest.forEach(dependente -> 
+        {
+            Cartao cartaoAdicional = cartaoService.cadastrarAdicional(dependente.nome(), cadastroUsuarioRequest.getTipoCartao(), usuarioSalvo);
+            usuarioSalvo.getDependentes().add(new Dependente(null, dependente.cpf(), dependente.nome(), cartaoAdicional, LocalDateTime.now()));            
+        });
+
+        usuarioRepository.save(usuarioSalvo);
         
         return new CadastroUsuarioResponse(cartao.getNumeroCartao(),cartao.getNomeTitular(), cartao.getTipoCartao(), usuario.getNome());
 
