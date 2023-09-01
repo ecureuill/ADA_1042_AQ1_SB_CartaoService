@@ -4,6 +4,7 @@ package tech.ada.bootcamp.arquitetura.cartaoservice.services;
 import java.time.LocalDate;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
@@ -29,35 +30,44 @@ public class CriarNovoCartaoServiceTest {
     @InjectMocks
     private CriarNovoCartaoService criarNovoCartaoService;
 
+    private static final int RANDOM_INDEX = (int) Math.random() * TipoCartao.values().length;
+    private static final String RANDOM_IDENTIFICADOR = Faker.instance().regexify("[0-9]{11}");
+    private static final String RANDOM_NOME = Faker.instance().name().fullName();
+    private static final TipoCartao RANDOM_TIPO_CARTAO = TipoCartao.values()[RANDOM_INDEX];
+
     @Test
-    void shouldSaveSuccessfullyANewCard(){
+    @DisplayName("Should save successfully a new card")
+    void shouldSaveSuccessfullyANewCard() {
         CadastroUsuarioRequest cadastroUsuarioRequest = Mockito.mock(CadastroUsuarioRequest.class);
+        Mockito.when(cadastroUsuarioRequest.getTipoCartao()).thenReturn(RANDOM_TIPO_CARTAO);
 
-        TipoCartao randomTipoCartao = TipoCartao.values()[(int)Math.random() * TipoCartao.values().length];
-        String randomIdentificador = Faker.instance().regexify("[0-9]{11}");
-        String randomNome = Faker.instance().name().fullName();
-
-        Mockito.when(cadastroUsuarioRequest.getTipoCartao()).thenReturn(randomTipoCartao);
-        
-        var usuario = new Usuario();
-        usuario.setIdentificador(randomIdentificador);
-        usuario.setNome(randomNome);
+        var usuario = createUsuario();
 
         criarNovoCartaoService.execute(cadastroUsuarioRequest.getTipoCartao(), usuario);
 
         ArgumentCaptor<Cartao> cartaoArgumentCaptor = ArgumentCaptor.forClass(Cartao.class);
-        Mockito.verify(cartaoRepository,Mockito.times(1))
-                .save(cartaoArgumentCaptor.capture());
-        Cartao cartaoSalvo = cartaoArgumentCaptor.getValue();
-        
-        Assertions.assertEquals(LocalDate.now().plusYears(5), cartaoSalvo.getVencimentoCartao());
-        Assertions.assertEquals(3,cartaoSalvo.getCodigoSeguranca().length());
-        Assertions.assertEquals(12, cartaoSalvo.getNumeroCartao().length());
-        Assertions.assertEquals(randomTipoCartao, cartaoSalvo.getTipoCartao());
-        Assertions.assertEquals(randomIdentificador, cartaoSalvo.getUsuario().getIdentificador());
-        Assertions.assertEquals(randomNome, cartaoSalvo.getNomeTitular());
-        Assertions.assertEquals(randomNome, cartaoSalvo.getUsuario().getNome());
-        Assertions.assertNotNull(cartaoSalvo.getCreatedAt());
+        Mockito.verify(cartaoRepository, Mockito.times(1)).save(cartaoArgumentCaptor.capture());
 
+        Cartao cartaoSalvo = cartaoArgumentCaptor.getValue();
+
+        assertCartao(cartaoSalvo);
+    }
+
+    private Usuario createUsuario() {
+        var usuario = new Usuario();
+        usuario.setIdentificador(RANDOM_IDENTIFICADOR);
+        usuario.setNome(RANDOM_NOME);
+        return usuario;
+    }
+
+    private void assertCartao(Cartao cartaoSalvo) {
+        Assertions.assertEquals(LocalDate.now().plusYears(5), cartaoSalvo.getVencimentoCartao());
+        Assertions.assertEquals(3, cartaoSalvo.getCodigoSeguranca().length());
+        Assertions.assertEquals(12, cartaoSalvo.getNumeroCartao().length());
+        Assertions.assertEquals(RANDOM_TIPO_CARTAO, cartaoSalvo.getTipoCartao());
+        Assertions.assertEquals(RANDOM_IDENTIFICADOR, cartaoSalvo.getUsuario().getIdentificador());
+        Assertions.assertEquals(RANDOM_NOME, cartaoSalvo.getNomeTitular());
+        Assertions.assertEquals(RANDOM_NOME, cartaoSalvo.getUsuario().getNome());
+        Assertions.assertNotNull(cartaoSalvo.getCreatedAt());
     }
 }
