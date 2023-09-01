@@ -24,9 +24,10 @@ public class CadastroUsuarioRequest {
     @NotNull
     private EnderecoRequest enderecoRequest;
 
+    @NotNull
     private TipoCartao tipoCartao;
 
     @Valid
+    @NotNull
     private List<DependenteRequest> dependentes;
-
 }
