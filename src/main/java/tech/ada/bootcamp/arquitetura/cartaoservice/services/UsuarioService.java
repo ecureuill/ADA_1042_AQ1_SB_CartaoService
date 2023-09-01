@@ -24,6 +24,30 @@ public class UsuarioService {
     private final CriarNovoCartaoService cartaoService;
 
     public CadastroUsuarioResponse cadastrar(CadastroUsuarioRequest cadastroUsuarioRequest) {
+        Usuario usuario = criarUsuario(cadastroUsuarioRequest);
+        usuario = usuarioRepository.save(usuario);
+        
+        Cartao cartao = cartaoService.execute(cadastroUsuarioRequest.getTipoCartao(), usuario);
+
+        
+        List<Dependente> dependentes = criarDependentes(cadastroUsuarioRequest, usuario);
+        usuario.setDependentes(dependentes);
+        usuarioRepository.save(usuario);
+        
+        return new CadastroUsuarioResponse(cartao.getNumeroCartao(),cartao.getNomeTitular(), cartao.getTipoCartao(), usuario.getNome());
+
+    }
+
+    private List<Dependente> criarDependentes(CadastroUsuarioRequest cadastroUsuarioRequest, Usuario usuario) {
+        return cadastroUsuarioRequest.getDependentes().stream().map(dependente -> 
+            {
+                Cartao cartaoAdicional = cartaoService.cadastrarAdicional(dependente.nome(), cadastroUsuarioRequest.getTipoCartao(), usuario);
+                return new Dependente(null, dependente.cpf(), dependente.nome(), usuario, cartaoAdicional, LocalDateTime.now());            
+            }
+        ).collect(Collectors.toList());
+    }
+
+    private Usuario criarUsuario(CadastroUsuarioRequest cadastroUsuarioRequest) {
         Endereco endereco = new Endereco(cadastroUsuarioRequest.getEnderecoRequest());
         
         Usuario usuario = new Usuario(
@@ -33,23 +57,7 @@ public class UsuarioService {
             LocalDateTime.now(),
             new ArrayList<Dependente>()
         );
-
-        var usuarioSalvo = usuarioRepository.save(usuario);
-        
-        Cartao cartao = cartaoService.execute(cadastroUsuarioRequest.getTipoCartao(), usuarioSalvo);
-
-        
-        List<Dependente> dependentes = cadastroUsuarioRequest.getDependentes().stream().map(dependente -> 
-            {
-                Cartao cartaoAdicional = cartaoService.cadastrarAdicional(dependente.nome(), cadastroUsuarioRequest.getTipoCartao(), usuarioSalvo);
-                return new Dependente(null, dependente.cpf(), dependente.nome(), usuario, cartaoAdicional, LocalDateTime.now());            
-            }
-        ).collect(Collectors.toList());
-        usuarioSalvo.setDependentes(dependentes);
-        usuarioRepository.save(usuarioSalvo);
-        
-        return new CadastroUsuarioResponse(cartao.getNumeroCartao(),cartao.getNomeTitular(), cartao.getTipoCartao(), usuario.getNome());
-
+        return usuario;
     }
     
 }
