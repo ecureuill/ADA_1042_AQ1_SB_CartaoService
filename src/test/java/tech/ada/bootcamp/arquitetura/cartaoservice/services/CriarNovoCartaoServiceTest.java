@@ -6,6 +6,7 @@ import java.time.LocalDate;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
@@ -70,4 +71,29 @@ public class CriarNovoCartaoServiceTest {
         Assertions.assertEquals(RANDOM_NOME, cartaoSalvo.getUsuario().getNome());
         Assertions.assertNotNull(cartaoSalvo.getCreatedAt());
     }
+
+    @DisplayName ("Should Fail To Save New Card With NonExisting User")
+    @Test
+    void shouldFailToSaveNewCardWithNonExistingUser() {
+        CadastroUsuarioRequest cadastroUsuarioRequest = Mockito.mock(CadastroUsuarioRequest.class);
+
+        TipoCartao randomTipoCartao = TipoCartao.values()[(int)Math.random() * TipoCartao.values().length];
+        String randomIdentificador = Faker.instance().regexify("[0-9]{11}");
+        String randomNome = Faker.instance().name().fullName();
+
+        Mockito.when(cadastroUsuarioRequest.getTipoCartao()).thenReturn(randomTipoCartao);
+
+        var usuario = new Usuario();
+        usuario.setIdentificador(randomIdentificador);
+        usuario.setNome(randomNome);
+
+        try {
+            criarNovoCartaoService.execute(cadastroUsuarioRequest.getTipoCartao(), usuario);
+            Assertions.fail("Expected an exception to be thrown");
+        } catch (RuntimeException e) {
+            Assertions.assertEquals("Usuário não encontrado", e.getMessage());
+        }
+
+    }
+
 }
