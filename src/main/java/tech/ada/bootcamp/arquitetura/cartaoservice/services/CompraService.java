@@ -1,6 +1,5 @@
 package tech.ada.bootcamp.arquitetura.cartaoservice.services;
 
-import java.util.Optional;
 import java.util.UUID;
 
 import org.springframework.http.HttpStatus;
