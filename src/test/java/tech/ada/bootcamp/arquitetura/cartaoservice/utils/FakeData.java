@@ -1,16 +1,24 @@
 package tech.ada.bootcamp.arquitetura.cartaoservice.utils;
 
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 import com.github.javafaker.Faker;
 
+import tech.ada.bootcamp.arquitetura.cartaoservice.entities.Cartao;
 import tech.ada.bootcamp.arquitetura.cartaoservice.entities.Dependente;
 import tech.ada.bootcamp.arquitetura.cartaoservice.entities.Endereco;
 import tech.ada.bootcamp.arquitetura.cartaoservice.entities.Usuario;
+import tech.ada.bootcamp.arquitetura.cartaoservice.payloads.TipoCartao;
 
 public class FakeData {
+    private static final Faker FAKER = new Faker();
+    private static final int RANDOM_INDEX = (int) Math.random() * TipoCartao.values().length;
+    private static final TipoCartao RANDOM_TIPO_CARTAO = TipoCartao.values()[RANDOM_INDEX];
 
     public static Usuario gerarUsuario(){
         return gerarUsuario(0);
@@ -18,8 +26,8 @@ public class FakeData {
 
     public static Usuario gerarUsuario(int countDependent){
         var usuario = new Usuario();
-        usuario.setIdentificador(Faker.instance().regexify("[0-9]{11}"));
-        usuario.setNome(Faker.instance().name().fullName());
+        usuario.setIdentificador(FAKER.regexify("[0-9]{11}"));
+        usuario.setNome(FAKER.name().fullName());
         usuario.setEndereco(gerarEndereco());
         usuario.setCreatedAt(LocalDateTime.now());
 
@@ -33,22 +41,38 @@ public class FakeData {
 
     public static Endereco gerarEndereco(){
         var endereco = new Endereco();
-        endereco.setRua(Faker.instance().address().streetAddress());
-        endereco.setBairro(Faker.instance().address().country());
-        endereco.setComplemento(Faker.instance().address().secondaryAddress());
-        endereco.setNumero(Faker.instance().address().streetAddressNumber())
+        endereco.setRua(FAKER.address().streetAddress());
+        endereco.setBairro(FAKER.address().country());
+        endereco.setComplemento(FAKER.address().secondaryAddress());
+        endereco.setNumero(FAKER.address().streetAddressNumber())
         ;
-        endereco.setCidade(Faker.instance().address().city());
-        endereco.setEstado(Faker.instance().address().state());
-        endereco.setCep(Faker.instance().address().zipCode());
+        endereco.setCidade(FAKER.address().city());
+        endereco.setEstado(FAKER.address().state());
+        endereco.setCep(FAKER.address().zipCode());
 
         return endereco;
     }
 
     public static Dependente gerarDependente(){
         var dependente = new Dependente();
-        dependente.setNome(Faker.instance().name().fullName());
-        dependente.setCpf(Faker.instance().regexify("[0-9]{11}"));
+        dependente.setNome(FAKER.name().fullName());
+        dependente.setCpf(FAKER.regexify("[0-9]{11}"));
         return dependente;
+    }
+
+    public static Cartao gerarCartao(){
+        
+        var cartao = new Cartao();
+        cartao.setNumeroCartao(FAKER.business().creditCardNumber());
+        cartao.setCreatedAt(FAKER.date().past(360*7, TimeUnit.DAYS).toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime());
+        cartao.setCodigoSeguranca(FAKER.number().digits(3));
+        cartao.setDependente(FAKER.random().nextBoolean());
+        cartao.setIdContaBanco(UUID.randomUUID().toString());
+        cartao.setUsuario(gerarUsuario(cartao.getDependente()? 1 : 0));
+        cartao.setNomeTitular(cartao.getDependente()? cartao.getUsuario().getDependentes().get(0).getNome() : cartao.getUsuario().getNome());
+        cartao.setTipoCartao(RANDOM_TIPO_CARTAO);
+        cartao.setVencimentoCartao(cartao.getCreatedAt().plusYears(5).toLocalDate());
+
+        return cartao;
     }
 }
