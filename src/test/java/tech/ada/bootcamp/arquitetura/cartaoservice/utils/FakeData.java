@@ -1,22 +1,26 @@
 package tech.ada.bootcamp.arquitetura.cartaoservice.utils;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 import com.github.javafaker.Faker;
 
 import tech.ada.bootcamp.arquitetura.cartaoservice.entities.Cartao;
+import tech.ada.bootcamp.arquitetura.cartaoservice.entities.Compra;
 import tech.ada.bootcamp.arquitetura.cartaoservice.entities.Dependente;
 import tech.ada.bootcamp.arquitetura.cartaoservice.entities.Endereco;
 import tech.ada.bootcamp.arquitetura.cartaoservice.entities.Usuario;
 import tech.ada.bootcamp.arquitetura.cartaoservice.payloads.TipoCartao;
 
 public class FakeData {
-    private static final Faker FAKER = new Faker();
+    private static final Faker FAKER = new Faker(Locale.US);
     private static final int RANDOM_INDEX = (int) Math.random() * TipoCartao.values().length;
     private static final TipoCartao RANDOM_TIPO_CARTAO = TipoCartao.values()[RANDOM_INDEX];
 
@@ -74,5 +78,15 @@ public class FakeData {
         cartao.setVencimentoCartao(cartao.getCreatedAt().plusYears(5).toLocalDate());
 
         return cartao;
+    }
+
+    public static Compra gerarCompra(){
+        var compra = new Compra();
+        compra.setCartao(gerarCartao());
+        compra.setDataCompra(LocalDate.now());
+        compra.setLoja(FAKER.company().name());
+        //TO-DO não está respeitando o locale
+        compra.setValor(new BigDecimal(FAKER.commerce().price().replace(",", ".")));
+        return compra;
     }
 }
