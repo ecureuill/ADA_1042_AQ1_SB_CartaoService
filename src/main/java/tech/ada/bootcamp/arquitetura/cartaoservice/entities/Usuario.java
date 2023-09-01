@@ -3,6 +3,7 @@ package tech.ada.bootcamp.arquitetura.cartaoservice.entities;
 import java.time.LocalDateTime;
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import org.springframework.data.annotation.CreatedDate;
 
 import jakarta.persistence.CascadeType;
@@ -34,6 +35,7 @@ public class Usuario {
     private LocalDateTime createdAt;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuario"  )
+    @JsonIgnore
     private List<Dependente> dependentes;
 
 }
