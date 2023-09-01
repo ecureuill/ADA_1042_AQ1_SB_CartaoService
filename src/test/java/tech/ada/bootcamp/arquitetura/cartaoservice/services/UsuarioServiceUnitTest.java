@@ -14,12 +14,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 
 import tech.ada.bootcamp.arquitetura.cartaoservice.entities.Cartao;
 import tech.ada.bootcamp.arquitetura.cartaoservice.entities.Usuario;
+import tech.ada.bootcamp.arquitetura.cartaoservice.exception.UsuarioExistenteException;
 import tech.ada.bootcamp.arquitetura.cartaoservice.payloads.request.CadastroUsuarioRequest;
 import tech.ada.bootcamp.arquitetura.cartaoservice.payloads.request.DependenteRequest;
 import tech.ada.bootcamp.arquitetura.cartaoservice.payloads.request.EnderecoRequest;
 import tech.ada.bootcamp.arquitetura.cartaoservice.repositories.UsuarioRepository;
 import tech.ada.bootcamp.arquitetura.cartaoservice.utils.FakeData;
-import tech.ada.bootcamp.arquitetura.exception.UsuarioExistenteException;
 
 @ExtendWith(MockitoExtension.class)
 public class UsuarioServiceUnitTest {
@@ -85,7 +85,7 @@ public class UsuarioServiceUnitTest {
 
         Assertions.assertThrows(UsuarioExistenteException.class, () -> usuarioService.cadastrar(cadastroUsuarioRequest));
     }
-
+    
     private void assertUser(Usuario expected, Usuario actual) {
         Assertions.assertEquals(expected.getIdentificador(), actual.getIdentificador());
         Assertions.assertEquals(expected.getNome(), actual.getNome());
