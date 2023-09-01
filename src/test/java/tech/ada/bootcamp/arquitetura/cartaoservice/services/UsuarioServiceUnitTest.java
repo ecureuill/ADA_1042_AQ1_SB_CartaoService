@@ -34,18 +34,10 @@ public class UsuarioServiceUnitTest {
     @DisplayName("Should create a new user with one new credit card and address")
     @Test
     public void createUserSucessufully() {
-        CadastroUsuarioRequest cadastroUsuarioRequest = Mockito.mock(CadastroUsuarioRequest.class);
         Usuario usuario = FakeData.gerarUsuario();
+        CadastroUsuarioRequest cadastroUsuarioRequest = createCadastroUsuarioRequest(usuario);
         
-        var enderecoRequest = new EnderecoRequest(usuario.getEndereco());
-
-        Mockito.when(cadastroUsuarioRequest.getNome()).thenReturn(usuario.getNome());
-        Mockito.when(cadastroUsuarioRequest.getIdentificador()).thenReturn(usuario.getIdentificador());
-
-        Mockito.when(cadastroUsuarioRequest.getEnderecoRequest()).thenReturn(enderecoRequest);
-
         Mockito.when(cartaoService.execute(Mockito.any(), Mockito.any())).thenReturn(new Cartao());
-
         Mockito.when(usuarioRepository.save(Mockito.any())).thenReturn(usuario);
 
         usuarioService.cadastrar(cadastroUsuarioRequest);
@@ -54,30 +46,17 @@ public class UsuarioServiceUnitTest {
 
         Mockito.verify(usuarioRepository, Mockito.times(2)).save(usuarioArgumentCaptor.capture());
 
-        Assertions.assertEquals(usuario.getIdentificador(), usuarioArgumentCaptor.getValue().getIdentificador());        
-        Assertions.assertEquals(usuario.getNome(), usuarioArgumentCaptor.getValue().getNome());
-        Assertions.assertEquals(usuario.getDependentes(), usuarioArgumentCaptor.getValue().getDependentes());
-        Assertions.assertEquals(usuario.getEndereco(), usuarioArgumentCaptor.getValue().getEndereco());
-        Assertions.assertEquals(usuario.getDependentes().size(), usuarioArgumentCaptor.getValue().getDependentes().size());
-        Assertions.assertNotNull(usuarioArgumentCaptor.getValue().getCreatedAt());
+        assertUser(usuario, usuarioArgumentCaptor.getValue());
+        Assertions.assertEquals(usuario.getDependentes().size(), 0);
 
     }
 
     @DisplayName("Should create a new user with one new credit card and address and a list of dependents")
     @Test
     public void createUserSucessufullyWithDependents() {
-        CadastroUsuarioRequest cadastroUsuarioRequest = Mockito.mock(CadastroUsuarioRequest.class);
         Usuario usuario = FakeData.gerarUsuario(3);
+        CadastroUsuarioRequest cadastroUsuarioRequest = createCadastroUsuarioRequest(usuario);
         
-        var enderecoRequest = new EnderecoRequest(usuario.getEndereco());
-
-        Mockito.when(cadastroUsuarioRequest.getNome()).thenReturn(usuario.getNome());
-        Mockito.when(cadastroUsuarioRequest.getIdentificador()).thenReturn(usuario.getIdentificador());
-        Mockito.when(cadastroUsuarioRequest.getEnderecoRequest()).thenReturn(enderecoRequest);
-        Mockito.when(cadastroUsuarioRequest.getDependentes()).thenReturn(usuario.getDependentes().stream()
-                .map(dependente -> new DependenteRequest(dependente.getCpf(), dependente.getNome()))
-                .collect(Collectors.toList()));
-
         Mockito.when(cartaoService.execute(Mockito.any(), Mockito.any())).thenReturn(new Cartao());
         Mockito.when(usuarioRepository.save(Mockito.any())).thenReturn(usuario);
         Mockito.when(cartaoService.cadastrarAdicional(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new Cartao());
@@ -88,11 +67,33 @@ public class UsuarioServiceUnitTest {
 
         Mockito.verify(usuarioRepository, Mockito.times(2)).save(usuarioArgumentCaptor.capture());
 
-        Assertions.assertEquals(usuario.getIdentificador(), usuarioArgumentCaptor.getValue().getIdentificador());        
-        Assertions.assertEquals(usuario.getNome(), usuarioArgumentCaptor.getValue().getNome());
-        Assertions.assertEquals(usuario.getDependentes(), usuarioArgumentCaptor.getValue().getDependentes());
-        Assertions.assertEquals(usuario.getEndereco(), usuarioArgumentCaptor.getValue().getEndereco());
-        Assertions.assertNotNull(usuarioArgumentCaptor.getValue().getCreatedAt());
+        assertUser(usuario, usuarioArgumentCaptor.getValue());
         Assertions.assertEquals(3, usuarioArgumentCaptor.getValue().getDependentes().size());
     }
+
+
+    private void assertUser(Usuario expected, Usuario actual) {
+        Assertions.assertEquals(expected.getIdentificador(), actual.getIdentificador());
+        Assertions.assertEquals(expected.getNome(), actual.getNome());
+        Assertions.assertEquals(expected.getDependentes(), actual.getDependentes());
+        Assertions.assertEquals(expected.getEndereco(), actual.getEndereco());
+        Assertions.assertNotNull(actual.getCreatedAt());
+    }
+
+    private CadastroUsuarioRequest createCadastroUsuarioRequest(Usuario usuario) {
+        CadastroUsuarioRequest cadastroUsuarioRequest = Mockito.mock(CadastroUsuarioRequest.class);
+
+        var enderecoRequest = new EnderecoRequest(usuario.getEndereco());
+
+        Mockito.when(cadastroUsuarioRequest.getNome()).thenReturn(usuario.getNome());
+        Mockito.when(cadastroUsuarioRequest.getIdentificador()).thenReturn(usuario.getIdentificador());
+        Mockito.when(cadastroUsuarioRequest.getEnderecoRequest()).thenReturn(enderecoRequest);
+        Mockito.when(cadastroUsuarioRequest.getDependentes()).thenReturn(
+            usuario.getDependentes().stream()
+                .map(dependente -> new DependenteRequest(dependente.getCpf(), dependente.getNome()))
+                .collect(Collectors.toList()));
+        
+        return cadastroUsuarioRequest;
+    }
+
 }
