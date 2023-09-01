@@ -12,10 +12,10 @@ import tech.ada.bootcamp.arquitetura.cartaoservice.entities.Cartao;
 import tech.ada.bootcamp.arquitetura.cartaoservice.entities.Dependente;
 import tech.ada.bootcamp.arquitetura.cartaoservice.entities.Endereco;
 import tech.ada.bootcamp.arquitetura.cartaoservice.entities.Usuario;
+import tech.ada.bootcamp.arquitetura.cartaoservice.exception.UsuarioExistenteException;
 import tech.ada.bootcamp.arquitetura.cartaoservice.payloads.request.CadastroUsuarioRequest;
 import tech.ada.bootcamp.arquitetura.cartaoservice.payloads.response.CadastroUsuarioResponse;
 import tech.ada.bootcamp.arquitetura.cartaoservice.repositories.UsuarioRepository;
-import tech.ada.bootcamp.arquitetura.exception.UsuarioExistenteException;
 
 @Service
 @RequiredArgsConstructor

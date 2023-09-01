@@ -9,10 +9,10 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import tech.ada.bootcamp.arquitetura.cartaoservice.exception.UsuarioExistenteException;
 import tech.ada.bootcamp.arquitetura.cartaoservice.payloads.request.CadastroUsuarioRequest;
 import tech.ada.bootcamp.arquitetura.cartaoservice.payloads.response.CadastroUsuarioResponse;
 import tech.ada.bootcamp.arquitetura.cartaoservice.services.UsuarioService;
-import tech.ada.bootcamp.arquitetura.exception.UsuarioExistenteException;
 
 @RestController
 @RequestMapping("/usuario")

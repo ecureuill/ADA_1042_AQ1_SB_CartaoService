@@ -1,4 +1,4 @@
-package tech.ada.bootcamp.arquitetura.exception;
+package tech.ada.bootcamp.arquitetura.cartaoservice.exception;
 
 public class UsuarioExistenteException extends Exception {
     
