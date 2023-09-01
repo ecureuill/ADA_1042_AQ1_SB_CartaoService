@@ -12,9 +12,9 @@ spring:
   main:
     allow-bean-definition-overriding: true
   datasource:
-    url: jdbc:postgresql://172.18.0.12:5432/cartao
-    username: devuser
-    password: 123
+    url: jdbc:postgresql://localhost:5433/cartao
+    username: cartao
+    password: cartao
   application:
     name: cartoes-ms
   jpa:
