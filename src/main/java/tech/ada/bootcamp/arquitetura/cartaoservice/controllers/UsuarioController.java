@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import tech.ada.bootcamp.arquitetura.cartaoservice.payloads.request.CadastroUsuarioRequest;
 import tech.ada.bootcamp.arquitetura.cartaoservice.payloads.response.CadastroUsuarioResponse;
 import tech.ada.bootcamp.arquitetura.cartaoservice.services.UsuarioService;
+import tech.ada.bootcamp.arquitetura.exception.UsuarioExistenteException;
 
 @RestController
 @RequestMapping("/usuario")
@@ -23,7 +24,7 @@ public class UsuarioController {
     
     @Transactional
     @PostMapping(path = "", produces = "application/json" )
-    public CadastroUsuarioResponse cadastrarUsuario(@RequestBody @Valid CadastroUsuarioRequest cadastroUsuarioRequest){
+    public CadastroUsuarioResponse cadastrarUsuario(@RequestBody @Valid CadastroUsuarioRequest cadastroUsuarioRequest) throws UsuarioExistenteException{
         return usuarioService.cadastrar(cadastroUsuarioRequest);
     }
 

@@ -15,6 +15,7 @@ import tech.ada.bootcamp.arquitetura.cartaoservice.entities.Usuario;
 import tech.ada.bootcamp.arquitetura.cartaoservice.payloads.request.CadastroUsuarioRequest;
 import tech.ada.bootcamp.arquitetura.cartaoservice.payloads.response.CadastroUsuarioResponse;
 import tech.ada.bootcamp.arquitetura.cartaoservice.repositories.UsuarioRepository;
+import tech.ada.bootcamp.arquitetura.exception.UsuarioExistenteException;
 
 @Service
 @RequiredArgsConstructor
@@ -23,8 +24,14 @@ public class UsuarioService {
     private final UsuarioRepository usuarioRepository;
     private final CriarNovoCartaoService cartaoService;
 
-    public CadastroUsuarioResponse cadastrar(CadastroUsuarioRequest cadastroUsuarioRequest) {
+    public CadastroUsuarioResponse cadastrar(CadastroUsuarioRequest cadastroUsuarioRequest) throws UsuarioExistenteException {
+        
+        if(usuarioRepository.existsById(cadastroUsuarioRequest.getIdentificador())){
+            throw new UsuarioExistenteException();
+        }
+
         Usuario usuario = criarUsuario(cadastroUsuarioRequest);
+
         usuario = usuarioRepository.save(usuario);
         
         Cartao cartao = cartaoService.execute(cadastroUsuarioRequest.getTipoCartao(), usuario);
