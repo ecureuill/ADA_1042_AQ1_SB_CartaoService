@@ -20,17 +20,16 @@ import tech.ada.bootcamp.arquitetura.cartaoservice.payloads.request.CadastroUsua
 import tech.ada.bootcamp.arquitetura.cartaoservice.payloads.request.DependenteRequest;
 import tech.ada.bootcamp.arquitetura.cartaoservice.payloads.request.EnderecoRequest;
 import tech.ada.bootcamp.arquitetura.cartaoservice.repositories.UsuarioRepository;
-import tech.ada.bootcamp.arquitetura.cartaoservice.repositories.DependenteRepository;
-
 import tech.ada.bootcamp.arquitetura.cartaoservice.utils.FakeData;
 
 @ExtendWith(MockitoExtension.class)
+// @MockitoSettings(strictness = Strictness.LENIENT) 
 public class UsuarioServiceUnitTest {
 
     @Mock
     private UsuarioRepository usuarioRepository;
     @Mock
-    private DependenteRepository dependenteRepository;
+    private DependenteService dependenteService;
     @Mock
     private CriarNovoCartaoService cartaoService;
 
@@ -42,7 +41,8 @@ public class UsuarioServiceUnitTest {
     public void createUserSucessufully() throws UsuarioExistenteException, DependenteExistenteException {
         Usuario usuario = FakeData.gerarUsuario();
         CadastroUsuarioRequest cadastroUsuarioRequest = createCadastroUsuarioRequest(usuario);
-        
+
+
         Mockito.when(usuarioRepository.existsById(Mockito.any())).thenReturn(false);
 
         Mockito.when(cartaoService.execute(Mockito.any(), Mockito.any())).thenReturn(new Cartao());
@@ -64,13 +64,15 @@ public class UsuarioServiceUnitTest {
     public void createUserSucessufullyWithDependents() throws UsuarioExistenteException, DependenteExistenteException {
         Usuario usuario = FakeData.gerarUsuario(3);
         CadastroUsuarioRequest cadastroUsuarioRequest = createCadastroUsuarioRequest(usuario);
-        
-        Mockito.when(usuarioRepository.existsById(Mockito.any())).thenReturn(false);
-        Mockito.when(dependenteRepository.existsByCpf((Mockito.any()))).thenReturn(false);
-        Mockito.when(cartaoService.execute(Mockito.any(), Mockito.any())).thenReturn(new Cartao());
-        Mockito.when(usuarioRepository.save(Mockito.any())).thenReturn(usuario);
-        Mockito.when(cartaoService.cadastrarAdicional(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new Cartao());
 
+        Mockito.when(usuarioRepository.existsById(Mockito.any())).thenReturn(false);
+
+        Mockito.when(dependenteService.criarDependentes(Mockito.any(), Mockito.any())).thenReturn(usuario.getDependentes());
+        
+        Mockito.when(cartaoService.execute(Mockito.any(), Mockito.any())).thenReturn(new Cartao());
+        
+        Mockito.when(usuarioRepository.save(Mockito.any())).thenReturn(usuario);
+        
         usuarioService.cadastrar(cadastroUsuarioRequest);
 
         ArgumentCaptor<Usuario> usuarioArgumentCaptor = ArgumentCaptor.forClass(Usuario.class);
@@ -100,11 +102,12 @@ public class UsuarioServiceUnitTest {
         CadastroUsuarioRequest cadastroUsuarioRequest = createCadastroUsuarioRequest(usuario);
         
         Mockito.when(usuarioRepository.existsById(Mockito.any())).thenReturn(false);
+
         Mockito.when(cartaoService.execute(Mockito.any(), Mockito.any())).thenReturn(new Cartao());
+
         Mockito.when(usuarioRepository.save(Mockito.any())).thenReturn(usuario);
-        Mockito.when(cartaoService.cadastrarAdicional(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new Cartao());
-        Mockito.when(dependenteRepository.existsByCpf(Mockito.anyString())).thenReturn(false);
-        Mockito.when(dependenteRepository.existsByCpf(usuario.getDependentes().get(2).getCpf())).thenReturn(true);
+
+        Mockito.when(dependenteService.criarDependentes(Mockito.any(), Mockito.any())).thenThrow(DependenteExistenteException.class);
 
         Assertions.assertThrows(DependenteExistenteException.class, () -> usuarioService.cadastrar(cadastroUsuarioRequest));
     }
@@ -122,13 +125,8 @@ public class UsuarioServiceUnitTest {
 
         var enderecoRequest = new EnderecoRequest(usuario.getEndereco());
 
-        Mockito.when(cadastroUsuarioRequest.getNome()).thenReturn(usuario.getNome());
         Mockito.when(cadastroUsuarioRequest.getIdentificador()).thenReturn(usuario.getIdentificador());
         Mockito.when(cadastroUsuarioRequest.getEnderecoRequest()).thenReturn(enderecoRequest);
-        Mockito.when(cadastroUsuarioRequest.getDependentes()).thenReturn(
-            usuario.getDependentes().stream()
-                .map(dependente -> new DependenteRequest(dependente.getCpf(), dependente.getNome()))
-                .collect(Collectors.toList()));
         
         return cadastroUsuarioRequest;
     }
