@@ -10,7 +10,7 @@ import tech.ada.bootcamp.arquitetura.cartaoservice.entities.Endereco;
 @Setter
 public class EnderecoRequest {   
     @NotBlank
-    @Pattern(regexp = "[0-9{8}]")
+    @Pattern(regexp = "[0-9]{8}")
     private String cep;
     @NotBlank
     private String rua;
