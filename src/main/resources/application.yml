@@ -12,13 +12,17 @@ spring:
   main:
     allow-bean-definition-overriding: true
   datasource:
+<<<<<<< Updated upstream
     url: jdbc:postgresql://localhost:5433/cartao
+=======
+    url: jdbc:postgresql://localhost:5432/cartao
+>>>>>>> Stashed changes
     username: cartao
     password: cartao
   application:
-    name: cartoes-ms
+    name: cartao
   jpa:
-    open-in-view: false 
+    open-in-view: false
     show-sql: true
     hibernate:
       format-sql: true
