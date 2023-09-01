@@ -19,6 +19,7 @@ import tech.ada.bootcamp.arquitetura.cartaoservice.payloads.request.DependenteRe
 import tech.ada.bootcamp.arquitetura.cartaoservice.payloads.request.EnderecoRequest;
 import tech.ada.bootcamp.arquitetura.cartaoservice.repositories.UsuarioRepository;
 import tech.ada.bootcamp.arquitetura.cartaoservice.utils.FakeData;
+import tech.ada.bootcamp.arquitetura.exception.UsuarioExistenteException;
 
 @ExtendWith(MockitoExtension.class)
 public class UsuarioServiceUnitTest {
@@ -33,10 +34,11 @@ public class UsuarioServiceUnitTest {
     
     @DisplayName("Should create a new user with one new credit card and address")
     @Test
-    public void createUserSucessufully() {
+    public void createUserSucessufully() throws UsuarioExistenteException {
         Usuario usuario = FakeData.gerarUsuario();
         CadastroUsuarioRequest cadastroUsuarioRequest = createCadastroUsuarioRequest(usuario);
         
+        Mockito.when(usuarioRepository.existsById(Mockito.any())).thenReturn(false);
         Mockito.when(cartaoService.execute(Mockito.any(), Mockito.any())).thenReturn(new Cartao());
         Mockito.when(usuarioRepository.save(Mockito.any())).thenReturn(usuario);
 
@@ -44,7 +46,7 @@ public class UsuarioServiceUnitTest {
 
         ArgumentCaptor<Usuario> usuarioArgumentCaptor = ArgumentCaptor.forClass(Usuario.class);
 
-        Mockito.verify(usuarioRepository, Mockito.times(2)).save(usuarioArgumentCaptor.capture());
+        Mockito.verify(usuarioRepository, Mockito.times(3)).save(usuarioArgumentCaptor.capture());
 
         assertUser(usuario, usuarioArgumentCaptor.getValue());
         Assertions.assertEquals(usuario.getDependentes().size(), 0);
@@ -53,10 +55,11 @@ public class UsuarioServiceUnitTest {
 
     @DisplayName("Should create a new user with one new credit card and address and a list of dependents")
     @Test
-    public void createUserSucessufullyWithDependents() {
+    public void createUserSucessufullyWithDependents() throws UsuarioExistenteException {
         Usuario usuario = FakeData.gerarUsuario(3);
         CadastroUsuarioRequest cadastroUsuarioRequest = createCadastroUsuarioRequest(usuario);
         
+        Mockito.when(usuarioRepository.existsById(Mockito.any())).thenReturn(false);
         Mockito.when(cartaoService.execute(Mockito.any(), Mockito.any())).thenReturn(new Cartao());
         Mockito.when(usuarioRepository.save(Mockito.any())).thenReturn(usuario);
         Mockito.when(cartaoService.cadastrarAdicional(Mockito.any(), Mockito.any(), Mockito.any())).thenReturn(new Cartao());
@@ -65,12 +68,23 @@ public class UsuarioServiceUnitTest {
 
         ArgumentCaptor<Usuario> usuarioArgumentCaptor = ArgumentCaptor.forClass(Usuario.class);
 
-        Mockito.verify(usuarioRepository, Mockito.times(2)).save(usuarioArgumentCaptor.capture());
+        Mockito.verify(usuarioRepository, Mockito.times(3)).save(usuarioArgumentCaptor.capture());
 
         assertUser(usuario, usuarioArgumentCaptor.getValue());
         Assertions.assertEquals(3, usuarioArgumentCaptor.getValue().getDependentes().size());
     }
 
+    @DisplayName("Sould throw error if user already exist")
+    @Test
+    public void shouldThrowErrorIfUserAlreadyExist() {
+        Usuario usuario = FakeData.gerarUsuario();
+        CadastroUsuarioRequest cadastroUsuarioRequest = Mockito.mock(CadastroUsuarioRequest.class);
+        Mockito.when(cadastroUsuarioRequest.getIdentificador()).thenReturn(usuario.getIdentificador());
+        
+        Mockito.when(usuarioRepository.existsById(Mockito.any())).thenReturn(true);
+
+        Assertions.assertThrows(UsuarioExistenteException.class, () -> usuarioService.cadastrar(cadastroUsuarioRequest));
+    }
 
     private void assertUser(Usuario expected, Usuario actual) {
         Assertions.assertEquals(expected.getIdentificador(), actual.getIdentificador());
