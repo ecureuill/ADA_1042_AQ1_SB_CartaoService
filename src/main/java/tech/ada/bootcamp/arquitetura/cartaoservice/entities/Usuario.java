@@ -1,13 +1,16 @@
 package tech.ada.bootcamp.arquitetura.cartaoservice.entities;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.data.annotation.CreatedDate;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Embedded;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -29,5 +32,8 @@ public class Usuario {
     @CreatedDate
     @Column(name = "\"createdAt\"")
     private LocalDateTime createdAt;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "usuario"  )
+    private List<Dependente> dependentes;
 
 }
