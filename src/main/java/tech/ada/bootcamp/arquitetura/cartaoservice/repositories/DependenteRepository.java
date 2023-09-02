@@ -14,4 +14,6 @@ public interface DependenteRepository extends JpaRepository<Dependente, UUID> {
   @Query("SELECT d FROM Dependente d WHERE d.usuario.identificador = :id")
   List<Dependente> findByUsuarioIdentificador(String id);
 
+  Boolean existsByCpf(String cpf);
+
 }

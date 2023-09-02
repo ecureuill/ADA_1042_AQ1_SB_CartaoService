@@ -9,6 +9,7 @@ import jakarta.transaction.Transactional;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import tech.ada.bootcamp.arquitetura.cartaoservice.exception.DependenteExistenteException;
 import tech.ada.bootcamp.arquitetura.cartaoservice.exception.UsuarioExistenteException;
 import tech.ada.bootcamp.arquitetura.cartaoservice.payloads.request.CadastroUsuarioRequest;
 import tech.ada.bootcamp.arquitetura.cartaoservice.payloads.response.CadastroUsuarioResponse;
@@ -24,7 +25,7 @@ public class UsuarioController {
     
     @Transactional
     @PostMapping(path = "", produces = "application/json" )
-    public CadastroUsuarioResponse cadastrarUsuario(@RequestBody @Valid CadastroUsuarioRequest cadastroUsuarioRequest) throws UsuarioExistenteException{
+    public CadastroUsuarioResponse cadastrarUsuario(@RequestBody @Valid CadastroUsuarioRequest cadastroUsuarioRequest) throws UsuarioExistenteException, DependenteExistenteException{
         return usuarioService.cadastrar(cadastroUsuarioRequest);
     }
 
