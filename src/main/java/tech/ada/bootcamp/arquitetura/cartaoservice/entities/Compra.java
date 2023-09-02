@@ -1,11 +1,8 @@
 package tech.ada.bootcamp.arquitetura.cartaoservice.entities;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.time.Instant;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Optional;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -20,7 +17,6 @@ import jakarta.persistence.Table;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
-import org.springframework.data.annotation.CreatedDate;
 
 @Getter
 @Setter
