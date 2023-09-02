@@ -20,6 +20,7 @@ import tech.ada.bootcamp.arquitetura.cartaoservice.payloads.request.DependenteRe
 import tech.ada.bootcamp.arquitetura.cartaoservice.payloads.response.dependentes.DependenteListaResponse;
 import tech.ada.bootcamp.arquitetura.cartaoservice.payloads.response.dependentes.DependenteResponse;
 import tech.ada.bootcamp.arquitetura.cartaoservice.services.DependenteService;
+import tech.ada.bootcamp.arquitetura.cartaoservice.services.cartao.BuscarCartaoUseCase;
 import tech.ada.bootcamp.arquitetura.cartaoservice.services.usuarios.BuscarUsuarioUseCase;
 
 @RestController
@@ -28,7 +29,7 @@ import tech.ada.bootcamp.arquitetura.cartaoservice.services.usuarios.BuscarUsuar
 @RequiredArgsConstructor
 public class DependenteController {
 
-  private final BuscarUsuarioUseCase buscarUsuario;
+  private final BuscarCartaoUseCase buscarCartao;
   private final DependenteService dependenteService;
 
   @GetMapping("/{userId}")
@@ -42,12 +43,18 @@ public class DependenteController {
 
   @PostMapping("/{userId}")
   public ResponseEntity<DependenteResponse> createDependente(
-      @RequestBody @Valid DependenteRequest dependente,
+      @RequestBody @Valid DependenteRequest dependenteRequest,
       @PathVariable String userId) {
-
     try {
-      final var user = buscarUsuario.FindById(userId);
-      final var response = dependenteService.createDependente(dependente, user);
+      final var cartao = buscarCartao.findByUserId(userId);
+      
+      final var dependente = dependenteService.createDependente(
+          dependenteRequest,
+          cartao.getUsuario(),
+          cartao.getTipoCartao());
+
+      final var response = new DependenteResponse(dependente);
+
       return ResponseEntity.status(CREATED).body(response);
     } catch (UsuarioNotFoundException e) {
       throw new ResponseStatusException(NOT_FOUND, e.getMessage());

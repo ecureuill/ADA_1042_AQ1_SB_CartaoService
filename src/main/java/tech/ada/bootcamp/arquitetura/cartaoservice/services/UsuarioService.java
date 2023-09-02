@@ -26,7 +26,7 @@ public class UsuarioService {
     private final CriarNovoCartaoService cartaoService;
 
     public CadastroUsuarioResponse cadastrar(CadastroUsuarioRequest cadastroUsuarioRequest)
-            throws UsuarioExistenteException {
+            throws UsuarioExistenteException, DependenteExistenteException {
 
         if (usuarioRepository.existsById(cadastroUsuarioRequest.getIdentificador())) {
             throw new UsuarioExistenteException();

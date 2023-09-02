@@ -1,13 +1,14 @@
 package tech.ada.bootcamp.arquitetura.cartaoservice.services;
 
 import java.util.stream.Collectors;
-
+import java.util.ArrayList;
 import java.util.List;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
 import tech.ada.bootcamp.arquitetura.cartaoservice.entities.Dependente;
 import tech.ada.bootcamp.arquitetura.cartaoservice.entities.Usuario;
+import tech.ada.bootcamp.arquitetura.cartaoservice.exception.DependenteExistenteException;
 import tech.ada.bootcamp.arquitetura.cartaoservice.exception.UsuarioNotFoundException;
 import tech.ada.bootcamp.arquitetura.cartaoservice.payloads.TipoCartao;
 import tech.ada.bootcamp.arquitetura.cartaoservice.payloads.request.DependenteRequest;
@@ -42,41 +43,44 @@ public class DependenteService {
         result);
   }
 
-  public DependenteResponse createDependente(
+  public Dependente createDependente(
       final DependenteRequest request,
       final Usuario user,
       final TipoCartao tipoCartao) {
-    var cartao = cartaoService.cadastrarAdicional(
-        request.getNome(),
+   final var cartao = cartaoService.cadastrarAdicional(
+        request.nome(),
         tipoCartao,
         user);
 
-    var dependente = new Dependente(request);
+    final var dependente = new Dependente(request);
     dependente.setCartao(cartao);
     dependente.setUsuario(user);
 
-    repository.save(dependente);
-
-    return new DependenteResponse(dependente);
+    return repository.save(dependente);
   }
 
   public List<Dependente> criarDependentes(
-    CadastroUsuarioRequest cadastroUsuarioRequest, 
-    Usuario usuario) throws DependenteExistenteException{
-  
+      final CadastroUsuarioRequest cadastroUsuarioRequest,
+      final Usuario usuario)
+          throws DependenteExistenteException {
+
     List<Dependente> dependentes = new ArrayList<Dependente>();
-      for (DependenteRequest dependenteRequest : cadastroUsuarioRequest.getDependentes()) {
-        validarDependente(dependenteRequest);
-        Dependente dependente = createDependente(dependenteRequest, usuario, cadastroUsuarioRequest.getTipoCartao());
-        dependentes.add(dependente);
+    for (DependenteRequest dependenteRequest : cadastroUsuarioRequest.getDependentes()) {
+      validarDependente(dependenteRequest);
+      Dependente dependente = createDependente(
+              dependenteRequest,
+              usuario,
+              cadastroUsuarioRequest.getTipoCartao());
+      dependentes.add(dependente);
     }
 
     return dependentes;
   }
 
-  private void validarDependente(DependenteRequest dependenteRequest) throws DependenteExistenteException {
-    //TODO como testar dependentes salvos durante a transaction?
-    if (dependenteRepository.existsByCpf(dependenteRequest.cpf())) {
+  private void validarDependente(DependenteRequest dependenteRequest)
+      throws DependenteExistenteException {
+    // TODO como testar dependentes salvos durante a transaction?
+    if (repository.existsByCpf(dependenteRequest.cpf())) {
       throw new DependenteExistenteException(dependenteRequest.cpf());
     }
   }
