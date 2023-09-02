@@ -12,8 +12,8 @@ spring:
   main:
     allow-bean-definition-overriding: true
   datasource:
-    url: jdbc:postgresql://localhost:5433/cartao
-    username: cartao
+    url: jdbc:postgresql://0.0.0.0:5433/cartao
+    username: cartao  
     password: cartao
   application:
     name: cartao
