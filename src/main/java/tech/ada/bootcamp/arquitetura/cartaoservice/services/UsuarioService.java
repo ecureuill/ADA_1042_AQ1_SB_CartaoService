@@ -25,38 +25,38 @@ public class UsuarioService {
     private final DependenteService dependenteService;
     private final CriarNovoCartaoService cartaoService;
 
-    public CadastroUsuarioResponse cadastrar(CadastroUsuarioRequest cadastroUsuarioRequest) throws UsuarioExistenteException, DependenteExistenteException {
-        
-        if(usuarioRepository.existsById(cadastroUsuarioRequest.getIdentificador())){
+    public CadastroUsuarioResponse cadastrar(CadastroUsuarioRequest cadastroUsuarioRequest)
+            throws UsuarioExistenteException, DependenteExistenteException {
+
+        if (usuarioRepository.existsById(cadastroUsuarioRequest.getIdentificador())) {
             throw new UsuarioExistenteException();
         }
 
         Usuario usuario = criarUsuario(cadastroUsuarioRequest);
 
         usuario = usuarioRepository.save(usuario);
-        
+
         Cartao cartao = cartaoService.execute(cadastroUsuarioRequest.getTipoCartao(), usuario);
 
-        
         List<Dependente> dependentes = dependenteService.criarDependentes(cadastroUsuarioRequest, usuario);
         usuario.setDependentes(dependentes);
         usuarioRepository.save(usuario);
-        
-        return new CadastroUsuarioResponse(cartao.getNumeroCartao(),cartao.getNomeTitular(), cartao.getTipoCartao(), usuario.getNome());
+
+        return new CadastroUsuarioResponse(cartao.getNumeroCartao(), cartao.getNomeTitular(), cartao.getTipoCartao(),
+                usuario.getNome());
 
     }
 
     private Usuario criarUsuario(CadastroUsuarioRequest cadastroUsuarioRequest) {
         Endereco endereco = new Endereco(cadastroUsuarioRequest.getEnderecoRequest());
-        
+
         Usuario usuario = new Usuario(
-            cadastroUsuarioRequest.getIdentificador(),
-            cadastroUsuarioRequest.getNome(), 
-            endereco,
-            LocalDateTime.now(),
-            new ArrayList<Dependente>()
-        );
+                cadastroUsuarioRequest.getIdentificador(),
+                cadastroUsuarioRequest.getNome(),
+                endereco,
+                LocalDateTime.now(),
+                new ArrayList<Dependente>());
         return usuario;
     }
-    
+
 }

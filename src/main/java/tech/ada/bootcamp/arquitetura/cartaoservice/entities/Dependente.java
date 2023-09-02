@@ -47,5 +47,6 @@ public class Dependente {
     public Dependente(DependenteRequest dto) {
         this.setCpf(dto.cpf());
         this.setNome(dto.nome());
+        this.createdAt = LocalDateTime.now();
     }
 }
