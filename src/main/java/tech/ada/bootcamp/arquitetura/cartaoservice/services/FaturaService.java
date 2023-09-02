@@ -47,16 +47,22 @@ public class FaturaService {
         List<Cartao> allCartoes = cartaoRepository.findAll();
 
         for (Cartao cartao : allCartoes) {
-            if (cartao.getVencimentoCartao().minusDays(generateFaturaXDaysBeforePaymentDate).getDayOfMonth() == currentDate.getDayOfMonth()) {
+            
+            LocalDate nextVencimento = (cartao.getVencimentoCartao() <= currentDate.getDayOfMonth()) ? 
+                                         currentDate.plusMonths(1).withDayOfMonth(cartao.getVencimentoCartao()) : 
+                                         currentDate.withDayOfMonth(cartao.getVencimentoCartao());
+        
+            if (nextVencimento.minusDays(generateFaturaXDaysBeforePaymentDate).isEqual(currentDate)) {
                 BigDecimal totalValor = compraRepository.sumValorByCartaoNumeroCartao(cartao.getNumeroCartao())
                                                        .orElse(BigDecimal.ZERO);
-                
+        
                 Fatura fatura = new Fatura();
                 fatura.setValor(totalValor);
                 fatura.setCartao(cartao);
                 faturaRepository.save(fatura);
             }
         }
+        
     }
 
     public Optional<Fatura> getLastFaturaForCartao(String numeroCartao) {
