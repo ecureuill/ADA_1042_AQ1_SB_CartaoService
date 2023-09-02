@@ -2,14 +2,22 @@ package tech.ada.bootcamp.arquitetura.cartaoservice.payloads.request;
 
 import org.hibernate.validator.constraints.br.CPF;
 
-import jakarta.validation.constraints.NotBlank;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
-public record DependenteRequest(
+import jakarta.validation.constraints.NotBlank;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+
+@Data
+@AllArgsConstructor
+public class DependenteRequest {
     @CPF
     @NotBlank
-    String cpf,
+    @JsonProperty("cpf")
+    private String cpf;
+
     @NotBlank
-    String nome
-) {
-    
+    @JsonProperty("nome")
+    private String nome;
+
 }
