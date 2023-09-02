@@ -62,7 +62,7 @@ public class CriarNovoCartaoServiceTest {
     }
 
     private void assertCartao(Cartao cartaoSalvo) {
-        Assertions.assertEquals(LocalDate.now().plusYears(5), cartaoSalvo.getVencimentoCartao());
+        Assertions.assertEquals(LocalDate.now().plusYears(5), cartaoSalvo.getValidadeCartao());
         Assertions.assertEquals(3, cartaoSalvo.getCodigoSeguranca().length());
         Assertions.assertEquals(12, cartaoSalvo.getNumeroCartao().length());
         Assertions.assertEquals(RANDOM_TIPO_CARTAO, cartaoSalvo.getTipoCartao());

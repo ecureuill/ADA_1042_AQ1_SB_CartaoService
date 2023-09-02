@@ -75,7 +75,8 @@ public class FakeData {
         cartao.setUsuario(gerarUsuario(cartao.getDependente()? 1 : 0));
         cartao.setNomeTitular(cartao.getDependente()? cartao.getUsuario().getDependentes().get(0).getNome() : cartao.getUsuario().getNome());
         cartao.setTipoCartao(RANDOM_TIPO_CARTAO);
-        cartao.setVencimentoCartao(cartao.getCreatedAt().plusYears(5).toLocalDate());
+        cartao.setValidadeCartao(cartao.getCreatedAt().plusYears(5).toLocalDate());
+        // implement cartao.setVencimentoCartao(); to address missing property during planning on cartao
 
         return cartao;
     }

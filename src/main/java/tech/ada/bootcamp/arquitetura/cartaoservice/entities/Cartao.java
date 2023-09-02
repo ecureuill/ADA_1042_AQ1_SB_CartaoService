@@ -24,7 +24,7 @@ public class Cartao {
     @Column(name = "\"nomeTitular\"")
     private String nomeTitular;
     @Column(name = "\"vencimentoCartao\"")
-    private LocalDate vencimentoCartao;
+    private Integer vencimentoCartao;
     @Column(name = "\"codigoSeguranca\"")
     private String codigoSeguranca;
     @Column(name = "\"tipoCartao\"")
@@ -41,5 +41,8 @@ public class Cartao {
     @CreatedDate
     @Column(name = "\"createdAt\"")
     private LocalDateTime createdAt;
+
+    @Column(name = "\"validadeCartao\"")
+    private LocalDate validadeCartao;
 
 }

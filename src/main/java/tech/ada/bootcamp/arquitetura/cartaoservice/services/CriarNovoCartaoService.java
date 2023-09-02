@@ -18,6 +18,7 @@ import tech.ada.bootcamp.arquitetura.cartaoservice.repositories.CartaoRepository
 @RequiredArgsConstructor
 public class CriarNovoCartaoService {
     private final CartaoRepository cartaoRepository;
+    private final Integer standardDueDate = 20;
     
     public Cartao execute(TipoCartao tipoCartao, Usuario usuario) {
         Cartao cartao = createCartao(tipoCartao, usuario, false);
@@ -37,7 +38,8 @@ public class CriarNovoCartaoService {
         cartao.setUsuario(usuario);
         cartao.setIdContaBanco(UUID.randomUUID().toString());
         cartao.setNomeTitular(usuario.getNome());
-        cartao.setVencimentoCartao(LocalDate.now().plusYears(5));
+        cartao.setValidadeCartao(LocalDate.now().plusYears(5));
+        cartao.setVencimentoCartao(standardDueDate);
         cartao.setCodigoSeguranca(gerarNumeroAleatorio(3));
         cartao.setNumeroCartao(gerarNumeroAleatorio(12));
         cartao.setCreatedAt(LocalDateTime.now());
