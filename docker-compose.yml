@@ -1,0 +1,23 @@
+services:
+  users:
+    build:
+      context: ./ADA_1042_AQ1_SB_CartaoService_MSUSUARIO
+      dockerfile: Dockerfile
+    ports:
+      - 9081:9081
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://dbusers:5432/user_ms
+    depends_on:
+      - dbusers
+  dbusers:
+    container_name: dbusers  
+    image: postgres:10
+    volumes:
+      - db-data-users:/var/lib/postgresql/data1
+    environment:
+      - POSTGRES_PASSWORD=123
+      - POSTGRES_USER=devuser
+      - POSTGRES_DB=user_ms
+volumes:
+  db-data-users:
+    driver: local
