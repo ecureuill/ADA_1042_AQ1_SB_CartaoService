@@ -1,6 +1,7 @@
 [submodule "ADA_1042_AQ1_SB_CartaoService_MSUSUARIO"]
 	path = ADA_1042_AQ1_SB_CartaoService_MSUSUARIO
 	url = https://github.com/ecureuill/ADA_1042_AQ1_SB_CartaoService_MSUSUARIO.git
+	branch = main
 [submodule "ADA_1042_AQ1_SB_CartaoService_MSFINANCEIRO"]
 	path = ADA_1042_AQ1_SB_CartaoService_MSFINANCEIRO
 	url = https://github.com/ecureuill/ADA_1042_AQ1_SB_CartaoService_MSFINANCEIRO.git
@@ -10,3 +11,5 @@
 [submodule "ADA_1042_AQ1_SB_CartaoService_MSNOTIFICACAO"]
 	path = ADA_1042_AQ1_SB_CartaoService_MSNOTIFICACAO
 	url = https://github.com/ecureuill/ADA_1042_AQ1_SB_CartaoService_MSNOTIFICACAO.git
+[submodule "ADA_1042_AQ1_SB_CartaoService_MSCOMPRA/"]
+	branch = dev
