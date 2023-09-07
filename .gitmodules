@@ -7,6 +7,7 @@
 [submodule "ADA_1042_AQ1_SB_CartaoService_MSCOMPRA"]
 	path = ADA_1042_AQ1_SB_CartaoService_MSCOMPRA
 	url = https://github.com/ecureuill/ADA_1042_AQ1_SB_CartaoService_MSCOMPRA.git
+	branch = main
 [submodule "ADA_1042_AQ1_SB_CartaoService_MSNOTIFICACAO"]
 	path = ADA_1042_AQ1_SB_CartaoService_MSNOTIFICACAO
 	url = https://github.com/ecureuill/ADA_1042_AQ1_SB_CartaoService_MSNOTIFICACAO.git
