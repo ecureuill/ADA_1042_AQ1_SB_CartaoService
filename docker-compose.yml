@@ -1,17 +1,24 @@
 services:
 ######### MICROSSERVIÇO DE USUÁRIOS ######### 
   users:
+    container_name: msusers
     build:
       context: ./ADA_1042_AQ1_SB_CartaoService_MSUSUARIO
       dockerfile: Dockerfile
+    expose: 
+      - 9081
     ports:
       - 9081:9081
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://dbusers:5432/user_ms
+      # - FINANCE_URL=finance:9085
+      - FINANCE_URL=0.0.0.0:9085
     depends_on:
       - dbusers
+    networks:
+      - network
   dbusers:
-    container_name: dbusers  
+    container_name: dbusers
     image: postgres:10
     volumes:
       - db-data-users:/var/lib/postgresql/data1
@@ -19,19 +26,26 @@ services:
       - POSTGRES_PASSWORD=123
       - POSTGRES_USER=devuser
       - POSTGRES_DB=user_ms
+    networks:
+      - network
 ######### MICROSSERVIÇO DE COMPRAS ######### 
   purchase:
+    container_name: purchase
     build:
       context: ./ADA_1042_AQ1_SB_CartaoService_MSCOMPRA
       dockerfile: dockerfile
+    expose: 
+      - 8085
     ports:
       - 8085:8085
     environment:
       - SPRING_DATASOURCE_URL=jdbc:postgresql://dbpurchase:5432/purchase_ms
     depends_on:
-      - dbpurchase        
+      - dbpurchase
+    networks:
+      - network
   dbpurchase:
-    container_name: dbpurchase  
+    container_name: dbpurchase
     image: postgres:10
     volumes:
       - db-data-purchase:/var/lib/postgresql/data1
@@ -39,7 +53,35 @@ services:
       - POSTGRES_PASSWORD=modulo
       - POSTGRES_USER=modulo
       - POSTGRES_DB=mscompra
+    networks:
+      - network
 ######### MICROSSERVIÇO FINANCEIRO ######### 
+  finance:
+    container_name: finance
+    build:
+      context: ./ADA_1042_AQ1_SB_CartaoService_MSFINANCEIRO
+      dockerfile: Dockerfile
+    expose: 
+      - 9085
+    ports:
+      - 9085:8080
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://dbfinance:5432/msfinanceiro
+    depends_on:
+      - dbfinance
+    networks:
+      - network
+  dbfinance:
+    container_name: dbfinance
+    image: postgres:10
+    volumes:
+      - db-data-finance:/var/lib/postgresql/data1
+    environment:
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_DB=msfinanceiro
+    networks:
+      - network
 ######### MICROSSERVIÇO NOTIFICACAO ######### 
 
 ######### VOLUMES ######### 
@@ -49,3 +91,13 @@ volumes:
     driver: local
   db-data-purchase:
     driver: local
+  db-data-finance:
+    driver: local
+
+networks:
+  network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 10.5.0.0/16
+          gateway: 10.5.0.1
