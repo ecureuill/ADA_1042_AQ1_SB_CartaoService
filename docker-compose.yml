@@ -1,4 +1,5 @@
 services:
+######### MICROSSERVIÇO DE USUÁRIOS ######### 
   users:
     build:
       context: ./ADA_1042_AQ1_SB_CartaoService_MSUSUARIO
@@ -18,6 +19,33 @@ services:
       - POSTGRES_PASSWORD=123
       - POSTGRES_USER=devuser
       - POSTGRES_DB=user_ms
+######### MICROSSERVIÇO DE COMPRAS ######### 
+  purchase:
+    build:
+      context: ./ADA_1042_AQ1_SB_CartaoService_MSCOMPRA
+      dockerfile: dockerfile
+    ports:
+      - 8085:8085
+    environment:
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://dbpurchase:5432/purchase_ms
+    depends_on:
+      - dbpurchase        
+  dbpurchase:
+    container_name: dbpurchase  
+    image: postgres:10
+    volumes:
+      - db-data-purchase:/var/lib/postgresql/data1
+    environment:
+      - POSTGRES_PASSWORD=modulo
+      - POSTGRES_USER=modulo
+      - POSTGRES_DB=mscompra
+######### MICROSSERVIÇO FINANCEIRO ######### 
+######### MICROSSERVIÇO NOTIFICACAO ######### 
+
+######### VOLUMES ######### 
+
 volumes:
   db-data-users:
+    driver: local
+  db-data-purchase:
     driver: local
